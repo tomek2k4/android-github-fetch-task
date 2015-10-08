@@ -19,14 +19,20 @@ public class MainActivity extends ListActivity {
     private List<Map<String,String>> usersList = new LinkedList<Map<String,String>>();
     private SimpleAdapter dataAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadNewUser();
+        //loadNewUser();
+
+        GithubRequest githubTask = new GithubRequest(this);
+
+        githubTask.execute();
 
         String[] from = new String[] {"userName","userId"};
         int [] to = new int[] {android.R.id.text1,android.R.id.text2};
+
 
         dataAdapter = new SimpleAdapter(this,usersList, android.R.layout.simple_list_item_activated_2,from,to);
 
@@ -38,6 +44,10 @@ public class MainActivity extends ListActivity {
         newUser.put("userId","1");
         newUser.put("userName","Tomek2k4");
         usersList.add(newUser);
+    }
+
+    public void setUsersList(List<Map<String, String>> usersList) {
+        this.usersList = usersList;
     }
 
     @Override
@@ -60,5 +70,9 @@ public class MainActivity extends ListActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public SimpleAdapter getMyAdapter() {
+        return dataAdapter;
     }
 }
