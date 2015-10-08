@@ -1,17 +1,43 @@
 package com.pum.tomasz.androidgithubfetchtask;
 
-import android.app.Activity;
+
+import android.app.ListActivity;
+import android.opengl.EGLExt;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SimpleAdapter;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
+
+    private List<Map<String,String>> usersList = new LinkedList<Map<String,String>>();
+    private SimpleAdapter dataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        loadNewUser();
+
+        String[] from = new String[] {"userName","userId"};
+        int [] to = new int[] {android.R.id.text1,android.R.id.text2};
+
+        dataAdapter = new SimpleAdapter(this,usersList, android.R.layout.simple_list_item_activated_2,from,to);
+
+        setListAdapter(dataAdapter);
+    }
+
+    private void loadNewUser() {
+        Map<String,String> newUser = new HashMap<String,String>() ;
+        newUser.put("userId","1");
+        newUser.put("userName","Tomek2k4");
+        usersList.add(newUser);
     }
 
     @Override
