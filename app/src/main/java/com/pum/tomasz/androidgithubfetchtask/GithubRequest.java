@@ -23,27 +23,16 @@ import retrofit.http.Url;
 /**
  * Created by tmaslon on 2015-10-08.
  */
-public class GithubRequest extends AsyncTask<String, Integer,List<GithubRequest.Contributor>>{
+public class GithubRequest extends AsyncTask<String, Integer,List<GithubUser>>{
     public static final String API_URL = "https://api.github.com";
 
     private final Context context;
     private final GitHub github;
 
-    public static class Contributor {
-        public final String login;
-        public final int contributions;
-
-        public Contributor(String login, int contributions) {
-            this.login = login;
-            this.contributions = contributions;
-        }
-    }
 
     public interface GitHub {
-        @GET("/repos/{owner}/{repo}/contributors")
-        Call<List<Contributor>> contributors(
-                @Path("owner") String owner,
-                @Path("repo") String repo);
+        @GET("/users")
+        Call<List<GithubUser>> users();
     }
 
 
@@ -62,40 +51,40 @@ public class GithubRequest extends AsyncTask<String, Integer,List<GithubRequest.
 
     }
 
-    private List<Contributor> requestGetAllContributors(){
+    private List<GithubUser> requestGetAllContributors(){
         // Create a call instance for looking up Retrofit contributors.
-        Call<List<Contributor>> call = github.contributors("square", "retrofit");
+        Call<List<GithubUser>> call = github.users();
 
         // Fetch and print a list of the contributors to the library.
-        List<Contributor> contributors = null;
+        List<GithubUser> users = null;
         try {
-            contributors = call.execute().body();
+            users = call.execute().body();
         } catch (IOException e) {
             Log.e("Tomek","Exception when calling Retro request"+e.getStackTrace().toString());
             e.printStackTrace();
         }
 
-        for (Contributor contributor : contributors) {
-            Log.d("Tomek",contributor.login + " (" + contributor.contributions + ")");
+        for (GithubUser user : users) {
+            Log.d("Tomek",user.getUserName() + " (" + user.getUserId() + ")");
         }
 
-        return contributors;
+        return users;
     }
 
     @Override
-    protected List<Contributor> doInBackground(String... strings) {
+    protected List<GithubUser> doInBackground(String... strings) {
 
-        List<Contributor> contributors = requestGetAllContributors();
+        List<GithubUser> users = requestGetAllContributors();
 
-        return contributors;
+        return users;
     }
 
 
     @Override
-    protected void onPostExecute(List<Contributor> contributors) {
+    protected void onPostExecute(List<GithubUser> users) {
         Activity act = (Activity) context;
 
-        List<Map<String,String>> usersList = convertContributorListToUsersList(contributors);
+        List<Map<String,String>> usersList = convertContributorListToUsersList(users);
 
         ((MainActivity)act).setUsersList(usersList);
 
@@ -109,14 +98,14 @@ public class GithubRequest extends AsyncTask<String, Integer,List<GithubRequest.
 
     }
 
-    private List<Map<String, String>> convertContributorListToUsersList(List<Contributor> contributors) {
+    private List<Map<String, String>> convertContributorListToUsersList(List<GithubUser> users) {
 
         List<Map<String,String>> listUsers = new LinkedList<Map<String,String>>();
 
-        for(Contributor contr: contributors){
+        for(GithubUser user: users){
             Map<String,String> map = new HashMap<>();
-            map.put("userId",Integer.valueOf(contr.contributions).toString());
-            map.put("userName",contr.login);
+            map.put("userId",Integer.valueOf(user.getUserId()).toString());
+            map.put("userName",user.getUserName());
             listUsers.add(map);
         }
 
