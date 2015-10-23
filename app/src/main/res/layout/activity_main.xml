@@ -10,12 +10,11 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id="@+id/users_list_view"
+        android:id="@+id/github_user_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </ListView>
-
 
 
 

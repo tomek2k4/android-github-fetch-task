@@ -1,10 +1,15 @@
 package com.pum.tomasz.androidgithubfetchtask;
 
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.util.HashMap;
@@ -13,40 +18,38 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
 
-    private List<Map<String,String>> usersList = new LinkedList<Map<String,String>>();
-    private SimpleAdapter dataAdapter;
-
+    private List<GithubUser> allUsersList = new LinkedList<>();
+    private BaseAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        //loadNewUser();
+        GithubUser user = new GithubUser();
+        user.setLogin("Tomek2k4");
+        allUsersList.add(user);
 
-        GithubRequest githubTask = new GithubRequest(this);
+        ListView userListView = (ListView) findViewById(R.id.github_user_list);
 
-        githubTask.execute();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allUsersList);
 
-        String[] from = new String[] {"userName","userId"};
-        int [] to = new int[] {android.R.id.text1,android.R.id.text2};
+        userListView.setAdapter((ListAdapter) adapter);
 
-        dataAdapter = new SimpleAdapter(this,usersList, android.R.layout.simple_list_item_activated_2,from,to);
-
-        setListAdapter(dataAdapter);
+        GithubRequest listAllUsersTask = new GithubRequest(this);
+        listAllUsersTask.execute();
     }
 
-    private void loadNewUser() {
-        Map<String,String> newUser = new HashMap<String,String>() ;
-        newUser.put("userId","1");
-        newUser.put("userName","Tomek2k4");
-        usersList.add(newUser);
+    public List<GithubUser> getAllUsersList() {
+        return allUsersList;
     }
 
-    public void setUsersList(List<Map<String, String>> usersList) {
-        this.usersList = usersList;
+    public void setAllUsersList(List<GithubUser> allUsersList) {
+        this.allUsersList = allUsersList;
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,7 +73,7 @@ public class MainActivity extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public SimpleAdapter getMyAdapter() {
-        return dataAdapter;
+    public BaseAdapter getAdapter() {
+        return adapter;
     }
 }
