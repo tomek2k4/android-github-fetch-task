@@ -2,7 +2,6 @@ package com.pum.tomasz.androidgithubfetchtask;
 
 
 import android.app.ListActivity;
-import android.opengl.EGLExt;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +31,6 @@ public class MainActivity extends ListActivity {
 
         String[] from = new String[] {"userName","userId"};
         int [] to = new int[] {android.R.id.text1,android.R.id.text2};
-
 
         dataAdapter = new SimpleAdapter(this,usersList, android.R.layout.simple_list_item_activated_2,from,to);
 
